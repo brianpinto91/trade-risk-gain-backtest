@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
+import datetime as dt
 
-def get_stop_loss_target(entry_price: float, trade_decision: int, reward_to_risk_ratio: float, stop_loss_percentage: float=None, stop_loss_points: float=None):
+def get_stop_loss_target(entry_price: float, trade_decision: int, reward_to_risk_ratio: float, stop_loss_percentage: float=None, stop_loss_points: float=None) -> tuple[float, float]:
     """A method to get stop loss and target price when either of stop-loss points or stop-loss-percentage is provided along with reward-to-risk ratio.
     
     Args:
@@ -27,7 +28,7 @@ def get_stop_loss_target(entry_price: float, trade_decision: int, reward_to_risk
         target_price = entry_price+target_points if trade_decision == 0 else entry_price-target_points
         return stop_loss_price, target_price
 
-def simulate_long_trade(entry_price: float, stop_loss_price: float, target_price: float, simulation_ohlc_df: pd.Series) -> float:
+def simulate_long_trade(entry_price: float, stop_loss_price: float, target_price: float, simulation_ohlc_df: pd.Series) -> tuple[dt.datetime, float, float, str]:
     """
     Calculate the profit/loss points with the provided entry, stop-loss, and target price using the OHLC data following the long-trade entry
     used for simulation. The length of this dataframe can be as long as you want to run the trade when stop-loss or target is not hit. The resolution
@@ -56,7 +57,7 @@ def simulate_long_trade(entry_price: float, stop_loss_price: float, target_price
     result_points = exit_price - entry_price
     return row_ohlc["date_time"], exit_price, result_points, "squared-off-at-end"
 
-def simulate_short_trade(entry_price: float, stop_loss_price: float, target_price: float, simulation_ohlc_df: pd.Series) -> float:
+def simulate_short_trade(entry_price: float, stop_loss_price: float, target_price: float, simulation_ohlc_df: pd.Series) -> tuple[dt.datetime, float, float, str]:
     """
     Calculate the profit/loss points with the provided entry, stop-loss, and target price using the OHLC data following the short-trade entry
     used for simulation. The length of this dataframe can be as long as you want to run the trade when stop-loss or target is not hit. The resolution
